@@ -129,10 +129,15 @@ impl XInputEventHandler {
 
         let mut translated_events = Vec::new();
 
+        let raw_ev: *mut ffi::XKeyEvent = event;
+        let filter = unsafe { (self.display.xlib.XFilterEvent)(mem::transmute(raw_ev), self.window) };
+
+        if filter != 0 {
+            return translated_events;
+        }
+
         let state;
         if event.type_ == ffi::KeyPress {
-            let raw_ev: *mut ffi::XKeyEvent = event;
-            unsafe { (self.display.xlib.XFilterEvent)(mem::transmute(raw_ev), self.window) };
             state = Pressed;
         } else {
             state = Released;

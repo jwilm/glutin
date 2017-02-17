@@ -240,7 +240,7 @@ impl<'a> Iterator for PollEventsIterator<'a> {
                     return Some(Refresh);
                 },
 
-                ffi::KeyPress | ffi::KeyRelease => {
+                ffi::KeyPress => {
                     let mut event: &mut ffi::XKeyEvent = unsafe { mem::transmute(&mut xev) };
                     let events = self.window.input_handler.lock().unwrap().translate_key_event(&mut event);
                     for event in events {
